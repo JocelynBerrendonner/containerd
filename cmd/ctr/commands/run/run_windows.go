@@ -84,6 +84,9 @@ func NewContainer(ctx gocontext.Context, client *containerd.Client, context *cli
 		if cwd := context.String("cwd"); cwd != "" {
 			opts = append(opts, oci.WithProcessCwd(cwd))
 		}
+		if context.Bool("net-host") {
+			opts = append(opts, oci.WithWindowsHostNamespace())
+		}
 		if context.Bool("tty") {
 			opts = append(opts, oci.WithTTY)
 

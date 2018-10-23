@@ -76,6 +76,13 @@ func setLinux(s *Spec) {
 	}
 }
 
+// setWindows sets Linux to empty if unset
+func setWindows(s *Spec) {
+	if s.Windows == nil {
+		s.Windows = &specs.Windows{}
+	}
+}
+
 // setCapabilities sets Linux Capabilities to empty if unset
 func setCapabilities(s *Spec) {
 	setProcess(s)
@@ -245,6 +252,18 @@ func WithHostNamespace(ns specs.LinuxNamespaceType) SpecOpts {
 				return nil
 			}
 		}
+		return nil
+	}
+}
+
+// WithHostNamespace allows a task to run inside the host's linux namespace
+func WithWindowsHostNamespace() SpecOpts {
+	return func(_ context.Context, _ Client, _ *containers.Container, s *Spec) error {
+		setWindows(s)
+		if s.Windows.Network == nil {
+			s.Windows.Network = &specs.WindowsNetwork{}
+		}
+		s.Windows.Network.NetworkNamespace = "{910F7D92-BA2D-4C3F-98AE-7C0AC590D2DC}"
 		return nil
 	}
 }
